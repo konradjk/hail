@@ -1779,6 +1779,43 @@ def sqrt(x) -> Float64Expression:
     return _func("sqrt", tfloat64, x)
 
 
+@typecheck(s1=expr_str, s2=expr_str)
+def hamming(s1, s2) -> Int32Expression:
+    """Returns the Hamming distance between the two strings.
+
+    Examples
+    --------
+    .. doctest::
+
+        >>> hl.eval_expr(hl.hamming('ATATA', 'ATGCA'))
+        2
+
+        >>> hl.eval_expr(hl.hamming('abcdefg', 'zzcdefz'))
+        3
+
+    Notes
+    -----
+    This method will fail if the two strings have different length.
+
+    Parameters
+    ----------
+    s1 : :class:`.StringExpression`
+        First string.
+    s2 : :class:`.StringExpression`
+        Second string.
+
+    Returns
+    -------
+    :class:`.Expression` of type :py:data:`.tint32`
+    """
+    return _func("hamming", tint32, s1, s2)
+
+
+@typecheck(s=expr_str)
+def is_valid_allele(s) -> BooleanExpression:
+    return s.matches(r'^([ACGT]+)|\\*$')
+
+
 @typecheck(ref=expr_str, alt=expr_str)
 def is_snp(ref, alt) -> BooleanExpression:
     """Returns ``True`` if the alleles constitute a single nucleotide polymorphism.
@@ -1801,7 +1838,12 @@ def is_snp(ref, alt) -> BooleanExpression:
     -------
     :class:`.BooleanExpression`
     """
-    return _func("is_snp", tbool, ref, alt)
+    return hl.bind(
+        lambda r, a: (is_valid_allele(r) &
+                      is_valid_allele(a) &
+                      r.length() == alt.length() &
+                      ((r != "*" & a != "*") if r.length() == 1 else hamming(r, a) == 1)),
+        ref, alt)
 
 
 @typecheck(ref=expr_str, alt=expr_str)
@@ -2076,38 +2118,6 @@ def allele_type(ref, alt)-> StringExpression:
     :class:`.StringExpression`
     """
     return _func("allele_type", tstr, ref, alt)
-
-
-@typecheck(s1=expr_str, s2=expr_str)
-def hamming(s1, s2) -> Int32Expression:
-    """Returns the Hamming distance between the two strings.
-
-    Examples
-    --------
-    .. doctest::
-
-        >>> hl.eval_expr(hl.hamming('ATATA', 'ATGCA'))
-        2
-
-        >>> hl.eval_expr(hl.hamming('abcdefg', 'zzcdefz'))
-        3
-
-    Notes
-    -----
-    This method will fail if the two strings have different length.
-
-    Parameters
-    ----------
-    s1 : :class:`.StringExpression`
-        First string.
-    s2 : :class:`.StringExpression`
-        Second string.
-
-    Returns
-    -------
-    :class:`.Expression` of type :py:data:`.tint32`
-    """
-    return _func("hamming", tint32, s1, s2)
 
 
 @typecheck(x=expr_any)
