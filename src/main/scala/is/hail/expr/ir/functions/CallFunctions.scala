@@ -13,5 +13,7 @@ object CallFunctions extends RegistryFunctions {
     val qualities = Array("isPhased", "isHomRef", "isHet",
       "isHomVar", "isNonRef", "isHetNonRef", "isHetRef")
     for (q <- qualities) registerScalaFunction(q, TCall(), TBoolean())(Call.getClass, q)
+
+    registerScalaFunction("nNonRefAlleles", TCall(), TInt32())(Call.getClass, "nNonRefAlleles")
   }
 }
