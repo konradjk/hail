@@ -5,6 +5,8 @@ import is.hail.expr.ir._
 import is.hail.expr.types._
 import org.apache.commons.math3.special.Gamma
 import is.hail.expr.ir.coerce
+import is.hail.utils.fatal
+import net.sourceforge.jdistlib.disttest.{DistributionTest, TestKind}
 
 object MathFunctions extends RegistryFunctions {
 
@@ -36,6 +38,17 @@ object MathFunctions extends RegistryFunctions {
 
   def runif(min: Double, max: Double): Double = min + (max - min) * math.random
 
+  def binomTest(nSuccess: Int, n: Int, p: Double, alternative: String): Double = {
+    val kind = alternative match {
+      case "two.sided" => TestKind.TWO_SIDED
+      case "less" => TestKind.LOWER
+      case "greater" => TestKind.GREATER
+      case _ => fatal(s"""Invalid alternative "$alternative". Must be "two_sided", "less" or "greater".""")
+    }
+
+    DistributionTest.binomial_test(nSuccess, n, p, kind)(1)
+  }
+
   def registerAll() {
     val thisClass = getClass
     val mathPackageClass = Class.forName("scala.math.package$")
@@ -53,6 +66,7 @@ object MathFunctions extends RegistryFunctions {
     registerScalaFunction("sqrt", TFloat64(), TFloat64())(mathPackageClass, "sqrt")
     registerScalaFunction("log", TFloat64(), TFloat64())(mathPackageClass, "log")
     registerScalaFunction("log", TFloat64(), TFloat64(), TFloat64())(thisClass, "log")
+    registerScalaFunction("log10", TFloat64(), TFloat64())(mathPackageClass, "log10")
     registerScalaFunction("pow", TFloat64(), TFloat64(), TFloat64())(mathPackageClass, "pow")
     registerScalaFunction("**", TFloat64(), TFloat64(), TFloat64())(mathPackageClass, "pow")
     registerScalaFunction("gamma", TFloat64(), TFloat64())(thisClass, "gamma")
