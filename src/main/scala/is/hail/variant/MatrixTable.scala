@@ -1157,7 +1157,7 @@ class MatrixTable(val hc: HailContext, val ast: MatrixIR) {
   def deleteVA(path: List[String]): (Type, Deleter) = rowType.delete(path)
 
   def dropCols(): MatrixTable =
-    copyAST(ast = FilterColsIR(ast, ir.False()))
+    copyAST(ast = FilterCols(ast, Const(null, false, TBoolean())))
 
   def dropRows(): MatrixTable = copy2(rvd = OrderedRVD.empty(sparkContext, matrixType.orvdType))
 
