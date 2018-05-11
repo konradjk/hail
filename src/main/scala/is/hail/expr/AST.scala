@@ -753,7 +753,7 @@ case class Apply(posn: Position, fn: String, args: Array[AST]) extends AST(posn,
 
   def toIR(agg: Option[String] = None): ToIRErr[IR] = {
     fn match {
-      case "merge" | "select" | "drop" | "index" =>
+      case "merge" | "select" | "index" =>
         fail(this)
       case "annotate" =>
         if (!args(1).isInstanceOf[StructConstructor])
