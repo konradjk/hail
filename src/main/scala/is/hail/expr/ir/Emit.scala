@@ -597,7 +597,7 @@ private class Emit(
           Code(
             oldv := old.value[Long],
             srvb.start(),
-            addFields: _*,
+            Code(addFields: _*),
             srvb.offset))
 
 
