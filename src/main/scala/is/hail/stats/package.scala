@@ -135,6 +135,8 @@ package object stats {
     }
   }
 
+  def calcFreqFilter(ac: Int, an: Int, ci: Double): Double = calcFreqFilter(ac, an, ci, lower = 1e-10, upper = 2, tol = 1e-7, precision = 1e-6)
+
   def FisherExactTest(a: Int, b: Int, c: Int, d: Int,
     oddsRatio: Double = 1d, confidence_level: Double = 0.95,
     alternative: String = "two.sided"): Array[Option[Double]] = {
