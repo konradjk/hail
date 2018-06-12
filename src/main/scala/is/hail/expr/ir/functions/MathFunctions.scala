@@ -139,7 +139,7 @@ object MathFunctions extends RegistryFunctions {
 
     registerScalaFunction("isnan", TFloat64(), TBoolean())(thisClass, "isnan")
 
-    registerScalaFunction("faf", TInt32(), TInt32(), TFloat64())(statsPackageClass, "calcFreqFilter")
+    registerScalaFunction("faf", TInt32(), TInt32(), TFloat64(), TFloat64())(statsPackageClass, "calcFreqFilter")
 
     registerCodeWithMissingness("&&", TBoolean(), TBoolean(), TBoolean()) { (_, l, r) =>
       EmitTriplet(
