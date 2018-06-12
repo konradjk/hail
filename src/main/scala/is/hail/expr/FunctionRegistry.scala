@@ -949,6 +949,8 @@ object FunctionRegistry {
   register("binomTest", { (x: Int, n: Int, p: Double, alternative: Int) => binomTest(x, n, p, alternative)
   })
 
+  register("faf", { (ac: Int, an: Int, ci: Double) => calcFreqFilter(ac, an, ci) })
+
   // NB: merge takes two structs, how do I deal with structs?
   register("exp", { (x: Double) => math.exp(x) })
   register("log10", { (x: Double) => math.log10(x) })
